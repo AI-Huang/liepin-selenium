@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  liepin-crawler:
+    build: .
+    container_name: liepin-crawler
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - HEADLESS=true
+    restart: unless-stopped
