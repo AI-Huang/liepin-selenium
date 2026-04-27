@@ -4,8 +4,12 @@ import time
 import savefile
 import showdata
 import spider
+from logger import logger
 
 if __name__ == "__main__":
+    logger.info("=" * 60)
+    logger.info("猎聘校园招聘爬虫系统启动")
+    logger.info("=" * 60)
     print("Program Started...")
 
     pool = multiprocessing.Pool(2)
