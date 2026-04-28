@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 
+from config import JOB_CARD_CLASS
+
 
 class JobParser:
     @staticmethod
@@ -63,6 +65,3 @@ class JobParser:
             "education": education,
             "url": job_url,
         }
-
-
-from config import JOB_CARD_CLASS
