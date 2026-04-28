@@ -1,28 +1,22 @@
 import csv
 import os
 
-import showdata
 from logger import logger
 
-# testdata = {'job':'猎聘','num':1, 'calagory':'a', 'where':'北京', 'time':1, 'salary':1, 'createtime':1}
-#
-# def test():
-#     with open('data.csv', 'w', newline='') as csvfp:
-#         csvdata = csv.writer(csvfp)
-#         while True:
-#             csvdata.writerow(list(testdata.values()))
-#             csvdata.writerow(['Spam'] * 5 + ['Baked Beans'])
-#             csvdata.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
 
-
-def start(queue, single, processpid):
+def start(queue, single, processpid, file_path="data/raw/data.csv"):
     processpid["savedata"] = os.getpid()
     logger.info(f"数据保存进程启动，PID: {os.getpid()}")
-    print("savedata已启动")
+    logger.info(f"数据保存路径: {file_path}")
+    logger.info("savedata已启动")
 
-    os.makedirs("data/raw", exist_ok=True)
+    # 确保目录存在
+    dir_path = os.path.dirname(file_path)
+    if dir_path:
+        os.makedirs(dir_path, exist_ok=True)
+
     save_count = 0
-    with open("data/raw/data.csv", "w", newline="", encoding="utf-8") as fp:
+    with open(file_path, "w", newline="", encoding="utf-8") as fp:
         csvdata = csv.DictWriter(
             fp,
             [

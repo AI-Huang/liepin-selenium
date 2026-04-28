@@ -1,3 +1,4 @@
+import argparse
 import multiprocessing
 import signal
 import sys
@@ -16,11 +17,23 @@ def signal_handler(signum, frame):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="猎聘校园招聘爬虫")
+    parser.add_argument("--pages", type=int, default=3, help="最大爬取页数（默认: 3）")
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="data/raw/data.csv",
+        help="输出文件路径（默认: data/raw/data.csv）",
+    )
+    args = parser.parse_args()
+
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
     logger.info("=" * 60)
     logger.info("猎聘校园招聘爬虫系统启动")
+    logger.info(f"最大爬取页数: {args.pages}")
+    logger.info(f"输出文件路径: {args.output}")
     logger.info("=" * 60)
 
     pool = multiprocessing.Pool(2)
@@ -33,11 +46,11 @@ if __name__ == "__main__":
     try:
         spiderProcess = pool.apply_async(
             spider.startspider,
-            (data, single, pidlist),
+            (data, single, pidlist, args.pages),
         )
         savefileProcess = pool.apply_async(
             savefile.start,
-            (data, single, pidlist),
+            (data, single, pidlist, args.output),
         )
 
         time.sleep(3)

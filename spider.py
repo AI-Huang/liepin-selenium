@@ -20,9 +20,10 @@ detail_browser = None
 
 class listpage(requestPage.Browser):
 
-    def __init__(self, browser="Chrome"):
+    def __init__(self, browser="Chrome", max_page_count=3):
         super().__init__(browser)
         self.page_count = 0
+        self.max_page_count = max_page_count
 
     def start_url(self, starturl):
         logger.info(f"开始爬取列表页: {starturl}")
@@ -38,6 +39,13 @@ class listpage(requestPage.Browser):
                 valid_urls = [
                     a for a in urls if a.get("href") and "/job/" in a.get("href")
                 ]
+
+                # 实时记录每个职位链接
+                for a_tag in valid_urls:
+                    url = a_tag.get("href")
+                    title = a_tag.text.strip() if a_tag.text else "无标题"
+                    logger.info(f"发现职位: {title} -> {url}")
+
                 with acquire.acquire(x_lock, y_lock):
                     detailpageurls.extend(valid_urls)
                 self.page_count += 1
@@ -53,6 +61,10 @@ class listpage(requestPage.Browser):
                         a_tag = div.find("a")
                         if a_tag and a_tag.get("href"):
                             urls.append(a_tag)
+                            # 实时记录每个职位链接
+                            url = a_tag.get("href")
+                            title = a_tag.text.strip() if a_tag.text else "无标题"
+                            logger.info(f"发现职位: {title} -> {url}")
                     with acquire.acquire(x_lock, y_lock):
                         detailpageurls.extend(urls)
                     self.page_count += 1
@@ -64,7 +76,7 @@ class listpage(requestPage.Browser):
             logger.debug(f"随机延迟 {delay} 秒")
             time.sleep(delay)
 
-            if spidersingle and self.page_count < 3:
+            if spidersingle and self.page_count < self.max_page_count:
                 self.get_page(self.driver.current_url, self.parse)
 
         except Exception as e:
@@ -156,11 +168,11 @@ class detailpage(requestPage.Browser):
             logger.error(f"详情页解析错误: {str(e)}", exc_info=True)
 
 
-def start_listpagespider():
+def start_listpagespider(max_page_count=3):
     global list_browser
-    logger.info("列表页爬虫线程 listspider 已启动")
+    logger.info(f"列表页爬虫线程 listspider 已启动，最大爬取页数: {max_page_count}")
     try:
-        list_browser = listpage("Chrome")
+        list_browser = listpage("Chrome", max_page_count=max_page_count)
         list_browser.start_url("https://campus.liepin.com/sojob/")
     except Exception as e:
         logger.error(f"列表页爬虫线程异常: {str(e)}", exc_info=True)
@@ -184,13 +196,15 @@ def start_pagespider(queue):
             logger.info("详情页浏览器已关闭")
 
 
-def startspider(queue, single, processpid):
+def startspider(queue, single, processpid, max_page_count=3):
     global spidersingle, list_browser, detail_browser
 
     processpid["spider"] = os.getpid()
     logger.info(f"爬虫进程启动，PID: {os.getpid()}")
 
-    listpagespider = threading.Thread(target=start_listpagespider)
+    listpagespider = threading.Thread(
+        target=start_listpagespider, args=(max_page_count,)
+    )
     listpagespider.start()
     getdetailpage = threading.Thread(target=start_pagespider, args=(queue,))
     getdetailpage.start()
@@ -198,6 +212,18 @@ def startspider(queue, single, processpid):
     try:
         while single["spider"]:
             time.sleep(1)
+
+            # 检测是否所有页面都已爬完
+            # 条件：列表页线程已结束 + 详情页线程已结束 + 队列为空
+            if not listpagespider.is_alive() and not getdetailpage.is_alive():
+                logger.info("所有爬虫线程已结束，自动退出")
+                single["spider"] = False
+                break
+
+            # 列表页结束但详情页还在处理时，给个提示
+            if not listpagespider.is_alive() and getdetailpage.is_alive():
+                logger.debug("列表页爬取完成，正在处理剩余详情页...")
+
     except Exception as e:
         logger.error(f"主循环异常: {str(e)}", exc_info=True)
     finally:
