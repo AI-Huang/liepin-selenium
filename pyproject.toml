@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "bs4>=0.0.2",
+    "geopy>=2.4.1",
     "pyecharts>=2.1.0",
     "selenium>=4.43.0",
 ]

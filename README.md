@@ -1,6 +1,6 @@
 # Python程序设计报告
 
-##  一、项目背景与需求分析
+## 一、项目背景与需求分析
 
 ### 1.项目背景
 
@@ -107,43 +107,37 @@ savedata.py文件将通过消息队列获取从spider传递过来的数据并存
 
 在实现多线程时仅使用 产生了死锁问题，后经过查阅资料引用了《cookbook》中的实例完美解决该问题（即acquire.py中的代码）。
 
-
-
 ## 四、数据分析或可视化
 
 ### 1.岗位需求统计
 
 从该图中可以得出哪些种岗位的市场需求较大，哪些最少结合当今的社会发展可规划未来的个人发展方向。也可结合个人情况分析未来哪些职业的发展前景较好，并为之指定发展计划。（不足，数据多比较难看，实际为动态图可选择想看的数据）
 
-![岗位需求统计](https://github.com/QianheYu/liepin-selenium/blob/main/img/msedge_90NhjeHN5x.png)
+![岗位需求统计](./figures/msedge_90NhjeHN5x.png)
 
 ### 2.全国各城市提供的就业岗位统计
 
 通过分析该数据可以为个人未来在哪个城市发展提供参考，结合其它统计数据可分析出
 
-![全国各城市岗位统计](https://github.com/QianheYu/liepin-selenium/blob/main/img/msedge_pfpYcPVROt.png)
+![全国各城市岗位统计](./figures/msedge_pfpYcPVROt.png)
 
 ### 3.企业类型统计
 
 该统计可为以后的个人发展提供参考，由于不同类型的企业其管理理念、价值观、以及企业文化的不同，结合个人生涯规划为以后的应聘目标提供参考。
 
-![image-20201230210634533](https://github.com/QianheYu/liepin-selenium/blob/main/img/msedge_Cs1J1JotSa.png)
+![image-20201230210634533](./figures/msedge_Cs1J1JotSa.png)
 
 ### 4.企业所处行业统计
 
 根据企业从事行业可毕业生选择企业做好规划和铺垫。
 
-![image-20201230210509248](https://github.com/QianheYu/liepin-selenium/blob/main/img/msedge_SncxsmcIy4.png)
+![image-20201230210509248](./figures/msedge_SncxsmcIy4.png)
 
 ### 5.企业规模统计
 
 通过企业规模统计可对不同规模的企业数进行统计，为其他如投资公司、初创企业孵化平台提供数据支持。
 
-
-
-![image-20201230210836341](https://github.com/QianheYu/liepin-selenium/blob/main/img/msedge_aO8YYUhIUU.png)
-
-
+![image-20201230210836341](./figures/msedge_aO8YYUhIUU.png)
 
 ## 五、结论与展望
 
@@ -609,9 +603,6 @@ if __name__ == '__main__':
     map.show(data=citys, title='全国各城市就业岗位统计')
 ```
 
-
-
 ## 参考文献
 
 [《cookbook》12.5 防止死锁的加锁机制](https://python3-cookbook.readthedocs.io/zh_CN/latest/c12/p05_locking_with_deadlock_avoidance.html#id1)
-
