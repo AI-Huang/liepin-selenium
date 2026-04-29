@@ -6,7 +6,7 @@ import time
 from bs4 import BeautifulSoup
 
 import acquire
-import requestPage
+from liepin_selenium.core.browser import Browser
 from logger import logger
 
 x_lock = threading.Lock()
@@ -18,10 +18,10 @@ list_browser = None
 detail_browser = None
 
 
-class listpage(requestPage.Browser):
+class listpage(Browser):
 
     def __init__(self, browser="Chrome", max_page_count=3):
-        super().__init__(browser)
+        super().__init__(browser_type=browser)
         self.page_count = 0
         self.max_page_count = max_page_count
 
@@ -83,9 +83,9 @@ class listpage(requestPage.Browser):
             logger.error(f"列表页解析错误: {str(e)}", exc_info=True)
 
 
-class detailpage(requestPage.Browser):
+class detailpage(Browser):
     def __init__(self, browser, queue):
-        super(detailpage, self).__init__(browser)
+        super().__init__(browser_type=browser)
         self.queue = queue
 
     def start_url(self):

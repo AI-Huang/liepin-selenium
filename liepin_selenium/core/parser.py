@@ -1,11 +1,13 @@
 from bs4 import BeautifulSoup
 
+from liepin_selenium.config.settings import settings
+
 
 class JobParser:
     @staticmethod
     def parse(html):
         soup = BeautifulSoup(html, "html.parser")
-        job_cards = soup.find_all("div", class_=JOB_CARD_CLASS)
+        job_cards = soup.find_all("div", class_=settings.JOB_CARD_CLASS)
         return job_cards
 
     @staticmethod
@@ -58,6 +60,3 @@ class JobParser:
             "education": education,
             "url": job_url,
         }
-
-
-from .config import JOB_CARD_CLASS
