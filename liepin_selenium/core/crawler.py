@@ -2,14 +2,8 @@ import json
 import time
 from datetime import datetime
 
+from ..config.settings import settings
 from .browser import Browser
-from .config import (
-    MAX_WAIT_TIME,
-    OUTPUT_FILENAME,
-    PROCESSED_DATA_DIR,
-    SCROLL_DELAY,
-    URL,
-)
 from .parser import JobParser
 
 
@@ -23,12 +17,12 @@ class LiepinCrawler:
         self.browser.start()
 
         try:
-            self.browser.get(URL)
+            self.browser.get(settings.URL)
             print("Page title:", self.browser.driver.title)
 
-            time.sleep(MAX_WAIT_TIME)
+            time.sleep(settings.MAX_WAIT_TIME)
             self.browser.scroll_to_bottom()
-            time.sleep(SCROLL_DELAY)
+            time.sleep(settings.SCROLL_DELAY)
 
             html = self.browser.get_page_source()
             job_cards = JobParser.parse(html)
@@ -60,10 +54,10 @@ class LiepinCrawler:
     def save_to_file(self, filename=None):
         if not filename:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = OUTPUT_FILENAME.format(timestamp=timestamp)
+            filename = settings.OUTPUT_FILENAME.format(timestamp=timestamp)
 
-        output_path = PROCESSED_DATA_DIR / filename
-        PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        output_path = settings.PROCESSED_DATA_DIR / filename
+        settings.PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(self.jobs, f, ensure_ascii=False, indent=2)

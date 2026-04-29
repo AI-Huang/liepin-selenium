@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 class Settings:
-    def __init__(self):
+    def __init__(self, keyword="python"):
         # Project paths
         self.BASE_DIR = Path(__file__).resolve().parent.parent.parent
         self.DATA_DIR = self.BASE_DIR / "data"
@@ -39,7 +39,7 @@ class Settings:
         self.MAX_RETRIES = 3
         self.RETRY_DELAY = 5
         self.RANDOM_DELAY_RANGE = (2, 5)
-        self.MAX_WAIT_TIME = 10
+        self.WAIT_TIME = 5
         self.SCROLL_DELAY = 3
 
         # Log settings
@@ -51,10 +51,12 @@ class Settings:
         # Output settings
         self.OUTPUT_FORMAT = "json"  # csv or json
         self.OUTPUT_ENCODING = "utf-8"
-        self.OUTPUT_FILENAME = "liepin_jobs_{timestamp}.json"
+        self.OUTPUT_FILENAME = "liepin_jobs_{keyword}_{timestamp}.json"
 
         # URL settings
-        self.URL = "https://www.liepin.com/zhaopin/?sfrom=click-pc_homepage-centre_searchbox-search_new&d_sfrom=search_fp&key=python"
+        self.KEYWORD = keyword
+        self.URL_TEMPLATE = "https://www.liepin.com/zhaopin/?key={keyword}"
+        self.URL = self.URL_TEMPLATE.format(keyword=self.KEYWORD)
 
         # Headers
         self.HEADERS = {

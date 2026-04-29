@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 
 from liepin_selenium.config.settings import settings
+from liepin_selenium.utils.url_utils import extract_job_info_from_url
 
 
 class JobParser:
@@ -18,6 +19,9 @@ class JobParser:
 
         job_url = job_link.get("href")
         job_text = job_link.text.strip()
+
+        # Extract short_url and job_id from job_url using utility function
+        short_url, job_id = extract_job_info_from_url(job_url)
 
         location_start = job_text.find("【")
         location_end = job_text.find("】")
@@ -58,5 +62,6 @@ class JobParser:
             "salary": salary,
             "experience": experience,
             "education": education,
-            "url": job_url,
+            "url": short_url,
+            "job_id": job_id,
         }

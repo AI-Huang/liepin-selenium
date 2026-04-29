@@ -7,8 +7,9 @@ import argparse
 import signal
 import sys
 
-from selenium_spider import setup_logger
-from selenium_spider.spiders.example_spider import ExampleSpider
+from liepin_selenium import setup_logger
+from liepin_selenium.spiders.example_spider import ExampleSpider
+from liepin_selenium.spiders.keyword_spider import KeywordSpider
 
 
 def signal_handler(signum, frame):
@@ -33,8 +34,8 @@ def main():
     parser.add_argument(
         "--spider",
         type=str,
-        default="example",
-        help="Spider name to run (default: example)",
+        default="keyword",
+        help="Spider name to run (example, keyword)",
     )
     parser.add_argument(
         "--output",
@@ -49,6 +50,18 @@ def main():
         default=True,
         help="Run browser in headless mode",
     )
+    parser.add_argument(
+        "--keyword",
+        type=str,
+        default="python",
+        help="Search keyword for job listings (default: python)",
+    )
+    parser.add_argument(
+        "--max-pages",
+        type=int,
+        default=None,
+        help="Maximum number of pages to crawl (default: None, crawl all pages)",
+    )
 
     args = parser.parse_args()
 
@@ -60,6 +73,14 @@ def main():
 
             if spider.data:
                 spider.export_data(format_type=args.output)
+
+        elif args.spider.lower() == "keyword":
+            spider = KeywordSpider(keyword=args.keyword)
+            spider.run(max_pages=args.max_pages)
+
+            if spider.data:
+                spider.export_data(format_type=args.output)
+                spider.preview_results()
 
         else:
             logger.error(f"Unknown spider: {args.spider}")
