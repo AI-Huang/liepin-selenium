@@ -173,7 +173,7 @@ def start_listpagespider(max_page_count=3):
     logger.info(f"列表页爬虫线程 listspider 已启动，最大爬取页数: {max_page_count}")
     try:
         list_browser = listpage("Chrome", max_page_count=max_page_count)
-        list_browser.start_url("https://campus.liepin.com/sojob/")
+        list_browser.start_url("https://www.liepin.com/campus")
     except Exception as e:
         logger.error(f"列表页爬虫线程异常: {str(e)}", exc_info=True)
     finally:
