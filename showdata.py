@@ -130,13 +130,20 @@ class drawBar:
 
 
 class DrawMapProvince:
+
     def show(self, data, title="全国各省份就业岗位统计", output_dir="figures"):
         os.makedirs(output_dir, exist_ok=True)
 
         province_data = {}
         for city, value in data.items():
 
-            province = get_province_only_in_manual_mapping(city)
+            try:
+                province = get_province_only_in_manual_mapping(city)
+            except ValueError as e:
+                print(
+                    f"get_province_only_in_manual_mapping({city}) 错误：错误信息：{e}"
+                )
+                continue
 
             if province not in province_data:
                 province_data[province] = 0
